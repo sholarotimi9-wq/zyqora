@@ -2042,9 +2042,10 @@ html,body{max-width:100vw;}
       </div>
       <div class="card">
         <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:14px;">Send a message</div>
-        <label class="f-lbl">Your name</label><input class="f-in" id="ctName" placeholder="Alex Smith"/>
-        <label class="f-lbl">Email</label><input class="f-in" id="ctEmail" placeholder="alex@email.com" type="email"/>
-        <label class="f-lbl">Message</label><textarea class="f-in f-ta" id="ctMsg" placeholder="How can we help?"></textarea>
+        <label class="f-lbl">Your name</label><input class="f-in" id="ctName" name="name" placeholder="Alex Smith"/>
+        <label class="f-lbl">Email</label><input class="f-in" id="ctEmail" name="email" placeholder="alex@email.com" type="email"/>
+        <label class="f-lbl">Message</label><textarea class="f-in f-ta" id="ctMsg" name="message" placeholder="How can we help?"></textarea>
+        <label class="f-lbl">Attach a file <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:var(--muted);">(optional)</span></label><input class="f-in" id="ctFile" name="upload" type="file" style="padding:8px 14px;"/>
         <button class="btn-full btn-purple" onclick="submitContact()">Send Message →</button>
       </div>
     </div>
@@ -10757,11 +10758,34 @@ function submitContact() {
   const n = document.getElementById('ctName').value.trim();
   const e = document.getElementById('ctEmail').value.trim();
   const m = document.getElementById('ctMsg').value.trim();
+  const f = document.getElementById('ctFile').files[0];
   if (!n || !e || !m) { showToast('Please fill in all fields.', 'red'); return; }
-  document.getElementById('ctName').value = '';
-  document.getElementById('ctEmail').value = '';
-  document.getElementById('ctMsg').value = '';
-  showToast("✓ Message sent! We'll reply within 2 hours.");
+  var fd = new FormData();
+  fd.append('name', n);
+  fd.append('email', e);
+  fd.append('message', m);
+  if (f) fd.append('upload', f);
+  var btn = document.querySelector('#lp-contact .btn-full');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  fetch('https://formspree.io/f/xdapojnz', {
+    method: 'POST',
+    body: fd,
+    headers: { 'Accept': 'application/json' }
+  }).then(function(r) {
+    if (r.ok) {
+      document.getElementById('ctName').value = '';
+      document.getElementById('ctEmail').value = '';
+      document.getElementById('ctMsg').value = '';
+      document.getElementById('ctFile').value = '';
+      showToast("✓ Message sent! We'll reply within 2 hours.");
+    } else {
+      showToast('Something went wrong. Please try again.', 'red');
+    }
+  }).catch(function() {
+    showToast('Network error. Please try again.', 'red');
+  }).finally(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Message →'; }
+  });
 }
 
 // ══════════════════════════════════════════════════════
