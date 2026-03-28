@@ -2010,17 +2010,22 @@ html,body{max-width:100vw;}
       <!-- ON-SITE REVIEW FORM -->
       <div class="card" style="margin-bottom:24px;">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;">Leave a site review</div>
-        <label class="f-lbl">Your overall rating</label>
-        <div class="star-row" id="starRow"><span class="star-b" onclick="setRating(1)">★</span><span class="star-b" onclick="setRating(2)">★</span><span class="star-b" onclick="setRating(3)">★</span><span class="star-b" onclick="setRating(4)">★</span><span class="star-b" onclick="setRating(5)">★</span></div>
-        <label class="f-lbl">Your name</label><input class="f-in" id="fbName" placeholder="Jane Smith"/>
-        <label class="f-lbl">Email (optional)</label><input class="f-in" id="fbEmail" placeholder="you@example.com" type="email"/>
-        <label class="f-lbl">Which template did you use?</label>
-        <select class="f-in" id="fbTmpl" style="position:relative;z-index:2;cursor:pointer;"><option>Traditional</option><option>Modern</option><option>Executive</option><option>Minimal</option><option>Aurora</option><option>Portrait</option><option>Vogue</option><option>Nordic</option></select>
-        <label class="f-lbl">Outcome</label>
-        <select class="f-in" id="fbOutcome" style="position:relative;z-index:2;cursor:pointer;"><option>Still applying</option><option>Got an interview</option><option>Got a job offer!</option><option>Multiple offers</option></select>
-        <label class="f-lbl">Your review</label>
-        <textarea class="f-in f-ta" id="fbText" placeholder="Tell us about your experience…"></textarea>
-        <button class="btn-full btn-purple" id="fbSubmitBtn" onclick="submitReview()">Submit Review ✓</button>
+        <form id="reviewForm" name="site-review" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="site-review" />
+          <p style="display:none"><label>Don't fill this: <input name="bot-field" /></label></p>
+          <input type="hidden" name="rating" id="fbRatingInput" value="" />
+          <label class="f-lbl">Your overall rating</label>
+          <div class="star-row" id="starRow"><span class="star-b" onclick="setRating(1)">★</span><span class="star-b" onclick="setRating(2)">★</span><span class="star-b" onclick="setRating(3)">★</span><span class="star-b" onclick="setRating(4)">★</span><span class="star-b" onclick="setRating(5)">★</span></div>
+          <label class="f-lbl">Your name</label><input class="f-in" id="fbName" name="name" placeholder="Jane Smith" required/>
+          <label class="f-lbl">Email (optional)</label><input class="f-in" id="fbEmail" name="email" placeholder="you@example.com" type="email"/>
+          <label class="f-lbl">Which template did you use?</label>
+          <select class="f-in" id="fbTmpl" name="template" style="position:relative;z-index:2;cursor:pointer;"><option>Traditional</option><option>Modern</option><option>Executive</option><option>Minimal</option><option>Aurora</option><option>Portrait</option><option>Vogue</option><option>Nordic</option></select>
+          <label class="f-lbl">Outcome</label>
+          <select class="f-in" id="fbOutcome" name="outcome" style="position:relative;z-index:2;cursor:pointer;"><option>Still applying</option><option>Got an interview</option><option>Got a job offer!</option><option>Multiple offers</option></select>
+          <label class="f-lbl">Your review</label>
+          <textarea class="f-in f-ta" id="fbText" name="review" placeholder="Tell us about your experience…" required></textarea>
+          <button type="submit" class="btn-full btn-purple" id="fbSubmitBtn">Submit Review ✓</button>
+        </form>
       </div>
 
       <!-- LIVE REVIEWS LIST -->
@@ -2045,11 +2050,15 @@ html,body{max-width:100vw;}
       </div>
       <div class="card">
         <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:14px;">Send a message</div>
-        <label class="f-lbl">Your name</label><input class="f-in" id="ctName" name="name" placeholder="Alex Smith"/>
-        <label class="f-lbl">Email</label><input class="f-in" id="ctEmail" name="email" placeholder="alex@email.com" type="email"/>
-        <label class="f-lbl">Message</label><textarea class="f-in f-ta" id="ctMsg" name="message" placeholder="How can we help?"></textarea>
-        <label class="f-lbl">Attach a file <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:var(--muted);">(optional)</span></label><input class="f-in" id="ctFile" name="upload" type="file" style="padding:8px 14px;"/>
-        <button class="btn-full btn-purple" onclick="submitContact()">Send Message →</button>
+        <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
+          <input type="hidden" name="form-name" value="contact" />
+          <p style="display:none"><label>Don't fill this: <input name="bot-field" /></label></p>
+          <label class="f-lbl">Your name</label><input class="f-in" id="ctName" name="name" placeholder="Alex Smith" required/>
+          <label class="f-lbl">Email</label><input class="f-in" id="ctEmail" name="email" placeholder="alex@email.com" type="email" required/>
+          <label class="f-lbl">Message</label><textarea class="f-in f-ta" id="ctMsg" name="message" placeholder="How can we help?" required></textarea>
+          <label class="f-lbl">Attach a file <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:var(--muted);">(optional, max 8 MB)</span></label><input class="f-in" id="ctFile" name="upload" type="file" style="padding:8px 14px;"/>
+          <button type="submit" class="btn-full btn-purple">Send Message →</button>
+        </form>
       </div>
     </div>
     <div class="l-footer"><div class="ft-logo"><img src="/images/logo.png" alt="Zyqora"></div><div class="ft-links"><button class="ft-link" onclick="landingPage('home')">Home</button><button class="ft-link" onclick="landingPage('contact')">Contact</button></div><div class="ft-copy">© 2026 Zyqora</div></div>
@@ -4842,34 +4851,34 @@ async function loadReviewsList() {
   } catch { el.innerHTML = '<div style="color:var(--muted);font-size:12.5px;">Could not load reviews.</div>'; }
 }
 
-async function submitReview() {
-  const name = document.getElementById('fbName').value.trim();
-  const email = document.getElementById('fbEmail').value.trim();
-  const text = document.getElementById('fbText').value.trim();
-  const template = document.getElementById('fbTmpl').value;
-  const outcome = document.getElementById('fbOutcome').value;
-  if (!name || !text || !fbRating) { showToast('Please fill in your name, rating and review.', 'red'); return; }
+async function submitReview(e) {
+  e.preventDefault();
+  if (!fbRating) { showToast('Please select a star rating.', 'red'); return; }
+  document.getElementById('fbRatingInput').value = fbRating;
+  const form = document.getElementById('reviewForm');
   const btn = document.getElementById('fbSubmitBtn');
   btn.textContent = 'Submitting…'; btn.disabled = true;
   try {
-    const res = await fetch('/api/reviews', {
+    const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, rating: fbRating, text, template, outcome })
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
     });
-    const d = await res.json();
-    if (d.success) {
-      document.getElementById('fbName').value = '';
-      document.getElementById('fbEmail').value = '';
-      document.getElementById('fbText').value = '';
+    if (res.ok) {
+      form.reset();
       setRating(0);
-      showToast('✓ Review submitted and live!');
-      loadReviewsList();
-      loadReviews();
-    } else { showToast(d.error || 'Could not submit.', 'red'); }
+      showToast('✓ Review submitted! Thank you for your feedback.');
+      if (typeof loadReviewsList === 'function') loadReviewsList();
+      if (typeof loadReviews === 'function') loadReviews();
+    } else { showToast('Could not submit review. Please try again.', 'red'); }
   } catch { showToast('Connection error. Please try again.', 'red'); }
   finally { btn.textContent = 'Submit Review ✓'; btn.disabled = false; }
 }
+// Attach form submit handler
+document.addEventListener('DOMContentLoaded', function() {
+  const reviewForm = document.getElementById('reviewForm');
+  if (reviewForm) reviewForm.addEventListener('submit', submitReview);
+});
 
 function setRating(n) {
   fbRating = n;
@@ -10763,29 +10772,22 @@ async function runCvMatching(jobs) {
 // ══════════════════════════════════════════════════════
 // CONTACT
 // ══════════════════════════════════════════════════════
-function submitContact() {
-  const n = document.getElementById('ctName').value.trim();
-  const e = document.getElementById('ctEmail').value.trim();
-  const m = document.getElementById('ctMsg').value.trim();
-  const f = document.getElementById('ctFile').files[0];
+function submitContact(event) {
+  if (event) event.preventDefault();
+  var form = document.getElementById('contactForm');
+  var n = document.getElementById('ctName').value.trim();
+  var e = document.getElementById('ctEmail').value.trim();
+  var m = document.getElementById('ctMsg').value.trim();
   if (!n || !e || !m) { showToast('Please fill in all fields.', 'red'); return; }
-  var fd = new FormData();
-  fd.append('name', n);
-  fd.append('email', e);
-  fd.append('message', m);
-  if (f) fd.append('upload', f);
-  var btn = document.querySelector('#lp-contact .btn-full');
+  var fd = new FormData(form);
+  var btn = form.querySelector('.btn-full');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-  fetch('https://formspree.io/f/xdapojnz', {
+  fetch('/', {
     method: 'POST',
-    body: fd,
-    headers: { 'Accept': 'application/json' }
+    body: fd
   }).then(function(r) {
     if (r.ok) {
-      document.getElementById('ctName').value = '';
-      document.getElementById('ctEmail').value = '';
-      document.getElementById('ctMsg').value = '';
-      document.getElementById('ctFile').value = '';
+      form.reset();
       showToast("✓ Message sent! We'll reply within 2 hours.");
     } else {
       showToast('Something went wrong. Please try again.', 'red');
@@ -10796,6 +10798,10 @@ function submitContact() {
     if (btn) { btn.disabled = false; btn.textContent = 'Send Message →'; }
   });
 }
+document.addEventListener('DOMContentLoaded', function() {
+  var cf = document.getElementById('contactForm');
+  if (cf) cf.addEventListener('submit', function(e) { submitContact(e); });
+});
 
 // ══════════════════════════════════════════════════════
 // RBAC & SESSION VERIFICATION (Supabase)
