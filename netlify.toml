@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# SPA fallback — ensures Supabase auth redirects (password reset, email confirm) serve the app
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
